@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if test "$#" -ne 1; then
+    echo "Usage: detectmask <filename (without extension '.bmp')>"
+else
+    rm -r $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/runs/
+    cp $1.bmp $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/
+    python3 $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/yolov7/detect.py --weights $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/best.pt --conf 0.25 --img-size 640 --source $1.bmp --save-txt
+    g++ -std=gnu++17 -o $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/main $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/main.cpp
+    $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/main $1
+    rm $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/copy_$1.bmp
+    rm $(brew --prefix)/Cellar/mask-detection/1.0.0/bin/$1.bmp
+fi
